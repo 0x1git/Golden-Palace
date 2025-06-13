@@ -299,13 +299,178 @@ include '../config.php';
             <button id="view-toggle-btn" class="btn btn-outline-light btn-sm me-2" onclick="toggleView()">
                 <i class="fas fa-table me-1"></i>Table View
             </button>
-            <button id="calendar-view-btn" class="btn btn-outline-light btn-sm me-2"><i class="fas fa-calendar-alt me-1"></i>Calendar View</button>
             <button class="adduser" id="adduser" onclick="adduseropen()"><i class="fa-solid fa-bookmark"></i> Add</button>
             <form action="./exportdata.php" method="post" style="display: inline;">
                 <button class="exportexcel" id="exportexcel" name="exportexcel" type="submit"><i class="fa-solid fa-file-arrow-down"></i></button>
             </form>
         </div>
-    </div>    <div class="booking-cards-container">
+    </div>
+
+    <!-- Booking Summary Section -->
+    <div class="booking-summary-container">
+        <?php
+        // Get booking statistics
+        $totalBookingsQuery = "SELECT COUNT(*) as total FROM roombook";
+        $totalBookingsResult = mysqli_query($conn, $totalBookingsQuery);
+        $totalBookings = mysqli_fetch_array($totalBookingsResult)['total'];
+
+        $confirmedBookingsQuery = "SELECT COUNT(*) as confirmed FROM roombook WHERE stat = 'Confirm'";
+        $confirmedBookingsResult = mysqli_query($conn, $confirmedBookingsQuery);
+        $confirmedBookings = mysqli_fetch_array($confirmedBookingsResult)['confirmed'];
+
+        $pendingBookingsQuery = "SELECT COUNT(*) as pending FROM roombook WHERE stat = 'NotConfirm'";
+        $pendingBookingsResult = mysqli_query($conn, $pendingBookingsQuery);
+        $pendingBookings = mysqli_fetch_array($pendingBookingsResult)['pending'];
+
+        // Get today's check-ins
+        $todayCheckinQuery = "SELECT COUNT(*) as today_checkin FROM roombook WHERE cin = CURDATE()";
+        $todayCheckinResult = mysqli_query($conn, $todayCheckinQuery);
+        $todayCheckins = mysqli_fetch_array($todayCheckinResult)['today_checkin'];
+
+        // Get today's check-outs
+        $todayCheckoutQuery = "SELECT COUNT(*) as today_checkout FROM roombook WHERE cout = CURDATE()";
+        $todayCheckoutResult = mysqli_query($conn, $todayCheckoutQuery);
+        $todayCheckouts = mysqli_fetch_array($todayCheckoutResult)['today_checkout'];
+
+        // Get total revenue (assuming you have a price calculation)
+        $totalRevenueQuery = "SELECT SUM(nodays) as total_days FROM roombook WHERE stat = 'Confirm'";
+        $totalRevenueResult = mysqli_query($conn, $totalRevenueQuery);
+        $totalDays = mysqli_fetch_array($totalRevenueResult)['total_days'] ?? 0;
+
+        // Get room type statistics
+        $roomTypeQuery = "SELECT RoomType, COUNT(*) as count FROM roombook GROUP BY RoomType";
+        $roomTypeResult = mysqli_query($conn, $roomTypeQuery);
+        $roomTypes = [];
+        while($row = mysqli_fetch_array($roomTypeResult)) {
+            $roomTypes[$row['RoomType']] = $row['count'];
+        }
+
+        // Get current month bookings
+        $currentMonthQuery = "SELECT COUNT(*) as month_bookings FROM roombook WHERE MONTH(cin) = MONTH(CURDATE()) AND YEAR(cin) = YEAR(CURDATE())";
+        $currentMonthResult = mysqli_query($conn, $currentMonthQuery);
+        $currentMonthBookings = mysqli_fetch_array($currentMonthResult)['month_bookings'];
+        ?>
+
+        <div class="summary-grid">
+            <!-- Total Bookings -->
+            <div class="summary-card total-bookings">
+                <div class="summary-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $totalBookings; ?></h3>
+                    <p class="summary-label">Total Bookings</p>
+                </div>
+            </div>
+
+            <!-- Confirmed Bookings -->
+            <div class="summary-card confirmed-bookings">
+                <div class="summary-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $confirmedBookings; ?></h3>
+                    <p class="summary-label">Confirmed</p>
+                    <span class="summary-percentage"><?php echo $totalBookings > 0 ? round(($confirmedBookings / $totalBookings) * 100) : 0; ?>%</span>
+                </div>
+            </div>
+
+            <!-- Pending Bookings -->
+            <div class="summary-card pending-bookings">
+                <div class="summary-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $pendingBookings; ?></h3>
+                    <p class="summary-label">Pending</p>
+                    <span class="summary-percentage"><?php echo $totalBookings > 0 ? round(($pendingBookings / $totalBookings) * 100) : 0; ?>%</span>
+                </div>
+            </div>
+
+            <!-- Today's Check-ins -->
+            <div class="summary-card todays-checkins">
+                <div class="summary-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $todayCheckins; ?></h3>
+                    <p class="summary-label">Today's Check-ins</p>
+                </div>
+            </div>
+
+            <!-- Today's Check-outs -->
+            <div class="summary-card todays-checkouts">
+                <div class="summary-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $todayCheckouts; ?></h3>
+                    <p class="summary-label">Today's Check-outs</p>
+                </div>
+            </div>
+
+            <!-- Total Guest Nights -->
+            <div class="summary-card total-nights">
+                <div class="summary-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $totalDays; ?></h3>
+                    <p class="summary-label">Total Guest Nights</p>
+                </div>
+            </div>
+
+            <!-- This Month -->
+            <div class="summary-card month-bookings">
+                <div class="summary-icon">
+                    <i class="fas fa-calendar-month"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $currentMonthBookings; ?></h3>
+                    <p class="summary-label">This Month</p>
+                </div>
+            </div>
+
+            <!-- Average Stay -->
+            <div class="summary-card average-stay">
+                <div class="summary-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="summary-content">
+                    <h3 class="summary-number"><?php echo $confirmedBookings > 0 ? round($totalDays / $confirmedBookings, 1) : 0; ?></h3>
+                    <p class="summary-label">Avg Stay (Days)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Type Distribution -->
+        <?php if (!empty($roomTypes)) { ?>
+        <div class="room-type-distribution">
+            <h4 class="distribution-title">
+                <i class="fas fa-chart-pie"></i>
+                Room Type Distribution
+            </h4>
+            <div class="room-type-grid">
+                <?php foreach ($roomTypes as $roomType => $count) { 
+                    $percentage = $totalBookings > 0 ? round(($count / $totalBookings) * 100) : 0;
+                ?>
+                <div class="room-type-item">
+                    <div class="room-type-info">
+                        <span class="room-type-name"><?php echo htmlspecialchars($roomType); ?></span>
+                        <span class="room-type-count"><?php echo $count; ?> bookings</span>
+                    </div>
+                    <div class="room-type-progress">
+                        <div class="progress-bar" style="width: <?php echo $percentage; ?>%"></div>
+                    </div>
+                    <span class="room-type-percentage"><?php echo $percentage; ?>%</span>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+        <?php } ?>
+    </div>
+
+    <div class="booking-cards-container">
         <?php
             // Force a fresh database connection to ensure we get the latest data
             if (!$conn || !mysqli_ping($conn)) {

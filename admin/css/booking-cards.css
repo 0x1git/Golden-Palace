@@ -357,6 +357,218 @@
     box-shadow: 0 0 0 0.2rem rgba(201, 165, 92, 0.25);
 }
 
+/* Booking Summary Styles */
+.booking-summary-container {
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(201, 165, 92, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.summary-card.total-bookings::before {
+    background: linear-gradient(90deg, #3498db, #2980b9);
+}
+
+.summary-card.confirmed-bookings::before {
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+}
+
+.summary-card.pending-bookings::before {
+    background: linear-gradient(90deg, #f39c12, #e67e22);
+}
+
+.summary-card.todays-checkins::before {
+    background: linear-gradient(90deg, #9b59b6, #8e44ad);
+}
+
+.summary-card.todays-checkouts::before {
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.summary-card.total-nights::before {
+    background: linear-gradient(90deg, #34495e, #2c3e50);
+}
+
+.summary-card.month-bookings::before {
+    background: linear-gradient(90deg, #1abc9c, #16a085);
+}
+
+.summary-card.average-stay::before {
+    background: linear-gradient(90deg, var(--accent-color), #f4d03f);
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.summary-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.summary-content {
+    flex: 1;
+    position: relative;
+}
+
+.summary-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--light-text);
+    margin: 0 0 5px 0;
+    line-height: 1;
+}
+
+.summary-label {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin: 0;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.summary-percentage {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--accent-color);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Room Type Distribution */
+.room-type-distribution {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(201, 165, 92, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.room-type-distribution::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-color), #f4d03f);
+}
+
+.distribution-title {
+    color: var(--light-text);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.distribution-title i {
+    color: var(--accent-color);
+}
+
+.room-type-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.room-type-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border-left: 3px solid var(--accent-color);
+}
+
+.room-type-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.room-type-name {
+    color: var(--light-text);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.room-type-count {
+    color: var(--text-color);
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.room-type-progress {
+    width: 120px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), #f4d03f);
+    border-radius: 4px;
+    transition: width 0.8s ease;
+}
+
+.room-type-percentage {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: right;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .bookings-grid {
@@ -397,6 +609,33 @@
         flex-direction: column;
         gap: 8px;
     }
+    
+    .summary-card {
+        padding: 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .summary-number {
+        font-size: 1.8rem;
+    }
+    
+    .summary-percentage {
+        position: static;
+        margin-top: 5px;
+        display: inline-block;
+    }
+    
+    .room-type-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .room-type-progress {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -416,6 +655,24 @@
     
     .id-number {
         font-size: 1.2rem;
+    }
+    
+    .summary-card {
+        padding: 15px;
+    }
+    
+    .summary-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .summary-number {
+        font-size: 1.6rem;
+    }
+    
+    .room-type-distribution {
+        padding: 20px;
     }
 }
 
@@ -453,4 +710,29 @@
 @keyframes spin {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Animation for summary cards */
+.summary-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.summary-card:nth-child(1) { animation-delay: 0.1s; }
+.summary-card:nth-child(2) { animation-delay: 0.2s; }
+.summary-card:nth-child(3) { animation-delay: 0.3s; }
+.summary-card:nth-child(4) { animation-delay: 0.4s; }
+.summary-card:nth-child(5) { animation-delay: 0.5s; }
+.summary-card:nth-child(6) { animation-delay: 0.6s; }
+.summary-card:nth-child(7) { animation-delay: 0.7s; }
+.summary-card:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
